@@ -1,5 +1,5 @@
 import AppShell from "@/components/layout/AppShell";
-import HomeDashboard from "./HomeDashboard"; // We will extract the home logic here
+import HomeDashboard from "./HomeDashboard";
 
 export default function HomePage() {
   return (

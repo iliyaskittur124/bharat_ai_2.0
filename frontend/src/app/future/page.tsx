@@ -5,10 +5,17 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Activity, Droplets, CloudRain, Car, Zap } from "lucide-react";
 
+interface SimulationImpacts {
+  floodRisk: string;
+  trafficDisruption: string;
+  infrastructureRisk: string;
+  emergencyAccess: string;
+}
+
 export default function FuturePage() {
   const [rainfall, setRainfall] = useState(100);
   const [simulationState, setSimulationState] = useState<'idle' | 'running' | 'results'>('idle');
-  const [impacts, setImpacts] = useState<any>(null);
+  const [impacts, setImpacts] = useState<SimulationImpacts | null>(null);
 
   const runSimulation = () => {
     setSimulationState('running');
