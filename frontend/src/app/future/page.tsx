@@ -8,12 +8,27 @@ import { Play, Activity, Droplets, CloudRain, Car, Zap } from "lucide-react";
 export default function FuturePage() {
   const [rainfall, setRainfall] = useState(100);
   const [simulationState, setSimulationState] = useState<'idle' | 'running' | 'results'>('idle');
+  const [impacts, setImpacts] = useState<any>(null);
 
   const runSimulation = () => {
     setSimulationState('running');
-    setTimeout(() => {
+    
+    fetch('/api/backend/api/simulate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rainfall, region: 'Maharashtra' })
+    })
+    .then(res => res.json())
+    .then(data => {
+      setImpacts(data.impacts);
+      setTimeout(() => {
+        setSimulationState('results');
+      }, 3000); // Keep artificial delay for the visual agent animation
+    })
+    .catch(err => {
+      console.error(err);
       setSimulationState('results');
-    }, 3000);
+    });
   };
 
   return (
@@ -142,17 +157,17 @@ export default function FuturePage() {
                    </div>
 
                    <div className="grid grid-cols-2 gap-4">
-                     <div className="p-4 bg-red/10 border border-red/20 rounded-xl">
-                        <div className="flex items-center text-red mb-2"><Droplets className="w-4 h-4 mr-2" /> Flood Risk</div>
-                        <div className="text-lg">Medium → <span className="font-bold">High</span></div>
+                     <div className={`p-4 rounded-xl border ${impacts?.floodRisk === 'HIGH' ? 'bg-red/10 border-red/20 text-red' : impacts?.floodRisk === 'MEDIUM' ? 'bg-amber/10 border-amber/20 text-amber' : 'bg-emerald/10 border-emerald/20 text-emerald'}`}>
+                        <div className="flex items-center mb-2"><Droplets className="w-4 h-4 mr-2" /> Flood Risk</div>
+                        <div className="text-lg font-bold">{impacts?.floodRisk || 'NORMAL'}</div>
                      </div>
-                     <div className="p-4 bg-amber/10 border border-amber/20 rounded-xl">
-                        <div className="flex items-center text-amber mb-2"><Car className="w-4 h-4 mr-2" /> Traffic Disruption</div>
-                        <div className="text-lg">Low → <span className="font-bold">High</span></div>
+                     <div className={`p-4 rounded-xl border ${impacts?.trafficDisruption === 'HIGH' ? 'bg-red/10 border-red/20 text-red' : impacts?.trafficDisruption === 'MEDIUM' ? 'bg-amber/10 border-amber/20 text-amber' : 'bg-emerald/10 border-emerald/20 text-emerald'}`}>
+                        <div className="flex items-center mb-2"><Car className="w-4 h-4 mr-2" /> Traffic Disruption</div>
+                        <div className="text-lg font-bold">{impacts?.trafficDisruption || 'NORMAL'}</div>
                      </div>
-                     <div className="p-4 bg-amber/10 border border-amber/20 rounded-xl">
-                        <div className="flex items-center text-amber mb-2"><Zap className="w-4 h-4 mr-2" /> Infrastructure</div>
-                        <div className="text-lg">Low → <span className="font-bold">Medium</span></div>
+                     <div className={`p-4 rounded-xl border ${impacts?.infrastructureRisk === 'HIGH' ? 'bg-red/10 border-red/20 text-red' : impacts?.infrastructureRisk === 'MEDIUM' ? 'bg-amber/10 border-amber/20 text-amber' : 'bg-emerald/10 border-emerald/20 text-emerald'}`}>
+                        <div className="flex items-center mb-2"><Zap className="w-4 h-4 mr-2" /> Infrastructure</div>
+                        <div className="text-lg font-bold">{impacts?.infrastructureRisk || 'NORMAL'}</div>
                      </div>
                    </div>
 

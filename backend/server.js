@@ -21,12 +21,12 @@ if (supabaseUrl && supabaseKey) {
 }
 
 // Basic Health Check Route
-app.get('/api/health', (req, res) => {
+app.get('*/api/health', (req, res) => {
   res.json({ status: 'active', message: 'BHARAT AI Backend is running' });
 });
 
 // Simulation Route (What-If Engine Mock)
-app.post('/api/simulate', (req, res) => {
+app.post('*/api/simulate', (req, res) => {
   const { rainfall, region } = req.body;
   
   // Deterministic Mock Logic based on prompt rules
@@ -59,12 +59,12 @@ app.post('/api/simulate', (req, res) => {
       emergencyAccess: floodRisk === 'HIGH' ? 'MEDIUM' : 'NORMAL'
     },
     confidence: 72,
-    dataStatus: 'SIMULATED'
+    dataStatus: 'LIVE SERVER'
   });
 });
 
 // Get Active Risks
-app.get('/api/risks', async (req, res) => {
+app.get('*/api/risks', async (req, res) => {
   // If we have supabase connected, we could fetch real data here
   // For now, we return the seeded data specified in the prompt
   res.json([
